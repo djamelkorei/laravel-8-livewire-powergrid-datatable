@@ -1,66 +1,236 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+![display](https://repository-images.githubusercontent.com/428653019/97c568c0-a759-45be-96e7-fe13dcc018ff)
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Laravel 8 - Livewire PowerGrid DataTable
 
-## About Laravel
+This guide walks you through the process of building a Laravel 8 application that uses Livewire and PowerGrid DataTable.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Check this tutorial on my [Blog](https://djamelkorei.hashnode.dev/laravel-8-livewire-powergrid-datatable) 👋
+## What You Will build
+You will build a Laravel application with quick datatable fully configurable.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## What You Need
+- A favorite text editor or IDE
+- PHP >= 7.3
+- Composer
+- Node.js
+- Npm
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Setup A New Project 
+Create a new Laravel project by using Composer:
+```bash
+composer create-project laravel/laravel laravel-8-livewire-powergrid-datatable
+cd laravel-8-livewire-powergrid-datatable
+php artisan serve
+``` 
 
-## Learning Laravel
+#### Installing Livewire
+```
+composer require livewire/livewire
+```
+#### Installing PowerGrid
+```
+composer require power-components/livewire-powergrid
+```
+#### Installing Tailwind
+PowerGrid use Tailwind or Bootstrap to style the datatable, in this tutorial we use tailwind.
+```
+npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
+```
+Generate the tailwind.config.js file:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```
+npx tailwindcss init
+```
+This will create a `tailwind.config.js` file at the root of your project, configure the `purge` option:
+```js
+module.exports = {
+   purge: [],
+   purge: [
+     './resources/**/*.blade.php',
+     './resources/**/*.js',
+     './resources/**/*.vue',
+   ],
+    darkMode: false, // or 'media' or 'class'
+    theme: {
+      extend: {},
+    },
+    variants: {
+      extend: {},
+    },
+    plugins: [],
+  }
+```
+In your `webpack.mix.js`, add tailwindcss as a PostCSS plugin:
+```js
+  mix.js("resources/js/app.js", "public/js")
+    .postCss("resources/css/app.css", "public/css", [
+     require("tailwindcss"),
+    ]);
+```
+Open the `./resources/css/app.css` and the `@tailwind` directive to include Tailwind’s base, components, and utilities styles, replacing the original file contents:
+```scss
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+#### Finalizing The Installation
+```
+npm install
+npm run dev
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Configure Database
+go to you `.env` file & update the database variables
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE= #you_database_name
+DB_USERNAME= #your_username
+DB_PASSWORD= #your_password
+```
+## Setup The Product Model
+Create a new model using the Artisan CLI's command, `-mf` flag to create a migration and a factory for the product model
+```
+php artisan make:model Product -mf
+``` 
 
-## Laravel Sponsors
+#### Update The Migration Class
+Go to the file `database/migrations/xxxx_xx_xx_xxxxxx_create_products_table.php` and update the table columns
+```php
+/**
+ * Run the migrations.
+ *
+ * @return void
+ */
+public function up()
+{
+    Schema::create('products', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->double('price', 8, 2);
+        $table->boolean('active');
+        $table->timestamps();
+    });
+}
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+#### Update The Models
+Go to the file `app/Models/Product.php` and update the product model class
+```php
+<?php
 
-### Premium Partners
+namespace App\Models;
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-- **[Romega Software](https://romegasoftware.com)**
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-## Contributing
+class Product extends Model
+{
+    use HasFactory;
+    protected $fillable = ['name', 'price', 'active'];
+}
+```
+#### Update The Product Factory Class
+Go to the file `database/factories/ProductFactory.php` and update the factory class
+```php
+<?php
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+namespace Database\Factories;
 
-## Code of Conduct
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+class ProductFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->word(),
+            'price' => $this->faker->randomNumber(2),
+            'active' => $this->faker->boolean(),
+            'user_id' => User::factory()
+        ];
+    }
+}
+```
 
-## Security Vulnerabilities
+#### Create New Records With Tinker
+Before start creating the records, you should migrate the product table using Artisan CLI's command
+```
+php artisan migrate
+```  
+- Run the `tinker` Artisan command
+- Create the product records
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+php artisan tinker 
+App\Models\Product::factory()->count(50)->create();
+```
+## Create PowerGrid Product Table View
+To create a PowerGrid table, run the following command:
+```
+php artisan powergrid:create ProductTable --model="App\Models\Product" --fillable
+``` 
+Now open the file `resources/views/welcome.blade.php` and update it:
+```html
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-## License
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Laravel 8 - Livewire PowerGrid Datatable</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    {{-- styles --}}
+    @livewireStyles
+    @powerGridStyles
+</head>
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<body>
+    <div class="min-h-screen bg-gray-100">
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-5">
+
+                    {{-- Product PowerGrid Tag --}}
+                    <livewire:product-table />
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- scripts --}}
+    @livewireScripts
+    @powerGridScripts
+</body>
+
+</html>
+```
+## Test
+First run the the command bellow for compiling new assets 
+```
+npm run dev
+```
+We are ready to run our application
+```
+php artisan serve
+```
+Now you can open the URL bellow on your browser
+```
+http://localhost:8000
+```
+## Summary
+
+Congratulations 🎉 ! You have create quick datatable using Laravel 8. You did it without having to write a single line of code and that is with the help of PowerGrid Datatable.
+
+## Blog
+
+Check new tutorials on my [Blog](https://djamelkorei.hashnode.dev/) 👋
