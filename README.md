@@ -4,7 +4,7 @@
 
 This guide walks you through the process of building a Laravel 8 application that uses Livewire and PowerGrid DataTable.
 
-Check this tutorial on my [Blog](https://djamelkorei.hashnode.dev/laravel-8-livewire-powergrid-datatable) 👋
+Check this tutorial on my [Blog](https://dev.djamelkorei.me/laravel-8-livewire-powergrid-datatable) 👋
 ## What You Will build
 You will build a Laravel application with quick datatable fully configurable.
 
@@ -233,4 +233,4 @@ Congratulations 🎉 ! You have create quick datatable using Laravel 8. You did 
 
 ## Blog
 
-Check new tutorials on my [Blog](https://djamelkorei.hashnode.dev/) 👋
+Check new tutorials on my [Blog](https://dev.djamelkorei.me/) 👋
