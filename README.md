@@ -214,7 +214,68 @@ Now open the file `resources/views/welcome.blade.php` and update it:
 
 </html>
 ```
-## Test
+
+## Testing your application
+
+Generally speaking, tests are a "control check" to guarantee that your application does what it is intended to do. Tests give you confidence that everything is working as it should.
+
+Running tests is also very helpful when we must refactor our code or upgrade a framework version.
+
+To get started, you need to install [Pest PHP](http://pestphp.com) with the Laravel and the Livewire Plugin.
+
+Run each of the 4 commands below:
+
+```shell
+composer require pestphp/pest --dev --with-all-dependencies
+
+composer require pestphp/pest-plugin-laravel --dev
+
+php artisan pest:install
+
+composer require pestphp/pest-plugin-livewire --dev
+```
+
+At this point, you are ready to create your test.
+
+Run the command below:
+
+```shell
+php artisan make:test ProductTableTest --pest
+```
+
+You should now have a new file named: `tests/Feature/ProductTableTest.php`.
+
+Open the file and replace its content with:
+
+```php
+<?php
+use App\Models\Product;
+use function Pest\Livewire\livewire;
+
+test('Database has products', function () {
+    $products = Product::all();
+
+    expect($products->count())->toBeGreaterThan(0);
+});
+
+test('Product table renders successfully', function () {
+    $this->get('/')
+        ->assertOK()
+        ->assertSeeLivewire('product-table');
+});
+```
+
+The first test is verifying that the database has products.
+
+The second test verifies (assert) that your home page can be rendered without errors (assertOK) and that it contains the Livewire components `product-table`.
+
+Now, you can run your tests with the command and verify if both tests will ✅ Pass:
+
+```shell
+php artisan test
+```
+
+## Serve your project
 First run the the command bellow for compiling new assets 
 ```
 npm run dev
